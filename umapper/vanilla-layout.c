@@ -1,5 +1,6 @@
 
 #include "vanilla-layout.h"
+#include <stdint.h>
 
 const __flash key_code vanilla_layout[VANILLA_LAYOUT_ROWS][VANILLA_LAYOUT_COLS] = {
   { KC_ESCAPE, 0, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_HOME },
@@ -8,5 +9,13 @@ const __flash key_code vanilla_layout[VANILLA_LAYOUT_ROWS][VANILLA_LAYOUT_COLS] 
   { KC_CAPS_LOCK, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SEMICOLON, KC_QUOTE, KC_UP, KC_ENTER, KC_END },
   { KC_LEFT_SHIFT, 0, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMMA, KC_DOT, KC_SLASH, KC_DOWN, KC_RIGHT_SHIFT, KC_DEL },
   { KC_LEFT_CTRL, KC_LGUI, KC_LALT, 0, 0, 0, KC_SPACE, 0, 0, 0, KC_RALT, KC_MENU, KC_RIGHT_CTRL, KC_LEFT, KC_RIGHT },
+};
+
+const __flash uint8_t vanilla_layout_inv_row[] = {
+  // TODO
+};
+
+const __flash uint8_t vanilla_layout_inv_col[] = {
+  // TODO
 };
 

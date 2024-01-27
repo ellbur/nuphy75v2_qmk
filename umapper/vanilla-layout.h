@@ -14,3 +14,6 @@
 
 extern const __flash key_code vanilla_layout[VANILLA_LAYOUT_ROWS][VANILLA_LAYOUT_COLS];
 
+extern const __flash uint8_t vanilla_layout_inv_row[];
+extern const __flash uint8_t vanilla_layout_inv_col[];
+
