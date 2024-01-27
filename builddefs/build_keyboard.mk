@@ -407,12 +407,15 @@ ifneq ($(strip $(INTROSPECTION_KEYMAP_C)),)
 OPT_DEFS += -DINTROSPECTION_KEYMAP_C=\"$(strip $(INTROSPECTION_KEYMAP_C))\"
 endif
 
+UMAPPER_SRC = umapper/mapping.c umapper/debugging.c umapper/layout-definitions.c umapper/vanilla-layout.c umapper/main.c
+
 # project specific files
 SRC += \
     $(KEYBOARD_SRC) \
     $(QUANTUM_DIR)/keymap_introspection.c \
     $(QUANTUM_SRC) \
     $(QUANTUM_DIR)/main.c \
+	$(UMAPPER_SRC)
 
 # Optimize size but this may cause error "relocation truncated to fit"
 #EXTRALDFLAGS = -Wl,--relax
