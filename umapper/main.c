@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include <stdint.h>
 
 #include "event.h"
 #include "vanilla-layout.h"
@@ -72,9 +73,17 @@ struct pass_through_data {
 static void output_event_routine_2(void *data, enum event_type t, key_code k) {
   struct pass_through_data *pass_through_data = data;
 
+  uint8_t col = pass_through_data->orig_event.key.col;
+  uint8_t row = pass_through_data->orig_event.key.row;
+  
+  if (k < MAX_KEYS) {
+    col = vanilla_layout_inv_col[k];
+    row = vanilla_layout_inv_row[k];
+  }
+  
   keypos_t key = {
-    .col = 0,
-    .row = 0
+    .col = col,
+    .row = row
   };
 
   keyevent_t event = {
@@ -94,11 +103,16 @@ void umapper_action_exec_2(keyevent_t event, void (*action_exec_orig)(keyevent_t
     .num_keys = our_num_keys
   };
 
+  struct pass_through_data our_pass_through_data = {
+    .action_exec_orig = action_exec_orig,
+    .orig_event = event
+  };
+
   if (event.key.row < VANILLA_LAYOUT_ROWS && event.key.col < VANILLA_LAYOUT_COLS) {
     key_code k = vanilla_layout[event.key.row][event.key.col];
 
     if (k != 0) {
-      step(&our_layout, &state, event.pressed ? PRESSED : RELEASED, k, output_event_routine, action_exec_orig);
+      step(&our_layout, &state, event.pressed ? PRESSED : RELEASED, k, output_event_routine_2, &our_pass_through_data);
     }
     else {
       action_exec_orig(event);
