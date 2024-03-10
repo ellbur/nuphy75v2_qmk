@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "../quantum/logging/debug.h"
 #include <stdint.h>
 
 #include "event.h"
@@ -75,16 +76,18 @@ static void output_event_routine_2(void *data, enum event_type t, key_code k) {
 
   uint8_t col = pass_through_data->orig_event.key.col;
   uint8_t row = pass_through_data->orig_event.key.row;
-  
+
   if (k < MAX_KEYS) {
     col = vanilla_layout_inv_col[k];
     row = vanilla_layout_inv_row[k];
   }
-  
+
   keypos_t key = {
     .col = col,
     .row = row
   };
+
+  dprintf("output_event_routine_2 [%d, %d] %d\n", key.row, key.col, t == PRESSED);
 
   keyevent_t event = {
     .key = key,
@@ -96,7 +99,17 @@ static void output_event_routine_2(void *data, enum event_type t, key_code k) {
   pass_through_data->action_exec_orig(event);
 }
 
+static keyevent_t last_event = { .key = { .col = 0xFF, .row = 0xFF}, .pressed = true };
+
 void umapper_action_exec_2(keyevent_t event, void (*action_exec_orig)(keyevent_t event)) {
+  if (last_event.pressed == event.pressed && last_event.key.col == event.key.col && last_event.key.row == event.key.row) {
+    return;
+  }
+
+  last_event = event;
+
+  dprintf("umapper_action_exec_2 %d %d [%d, %d] %d\n", event.time, event.type, event.key.row, event.key.col, event.pressed);
+
   struct layout our_layout = {
     .mappings = our_mappings,
     .key_definitions = our_key_definitions,

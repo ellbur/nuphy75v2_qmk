@@ -23,21 +23,26 @@ for @lines -> $line {
         if $line ~~ /\}\;/ {
             last;
         }
-        
-        if $line ~~ /\s*\{\s*((<[\w\(\)]>+)\,\s*)+\,?\s*\}\,?\s*/ {
+
+        if $line ~~ /^\s*\/\/.*/ {
+        }
+        elsif $line ~~ /\s*\{\s*((<[\w\(\)]>+)\,\s*)+\,?\s*\}\,?\s*/ {
             my $col = 0;
             for @0 -> $thing {
                 my $key-name = $thing[0].Str;
                 if $key-name ne '0' {
+                    if %row-table<$key-name>:exists {
+                        die("Duplicate key $key-name");
+                    }
                     %row-table{$key-name} = $row;
                     %col-table{$key-name} = $col;
-                    $col += 1;
                 }
+                $col += 1;
             }
             $row += 1;
         }
         else {
-            say "no";
+            die("Non-matching row $line");
         }
     }
 }

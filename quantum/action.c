@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "host.h"
 #include "keycode.h"
 #include "keyboard.h"
+#include "logging/debug.h"
 #include "mousekey.h"
 #include "programmable_button.h"
 #include "command.h"
@@ -136,7 +137,21 @@ void action_exec_orig(keyevent_t event) {
  * FIXME: Needs documentation.
  */
 void action_exec(keyevent_t event) {
-    umapper_action_exec_2(event, &action_exec_orig);
+    static bool very_first = true;
+    if (event.type == KEY_EVENT) {
+        umapper_action_exec_2(event, &action_exec_orig);
+
+        // This fixes a strange glitch that does not seem to be in my code
+        // where the first pressed key doesn't release. So we release it.
+        if (very_first) {
+            very_first = false;
+            event.pressed = false;
+            umapper_action_exec_2(event, &action_exec_orig);
+        }
+    }
+    else {
+        action_exec_orig(event);
+    }
 }
 
 #ifdef SWAP_HANDS_ENABLE
